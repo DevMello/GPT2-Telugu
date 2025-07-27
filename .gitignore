@@ -3,4 +3,6 @@ scrapers/news_website.txt
 data/books.txt
 data/news_website_cleaned.txt
 data/news_website.txt
-telugu-gpt2/model.safetensors
+wandb/
+*.safetensors
+telugu-gpt2-small/runs/

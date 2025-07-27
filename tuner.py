@@ -10,6 +10,9 @@ from datasets import load_dataset, concatenate_datasets
 
 tokenizer = GPT2TokenizerFast.from_pretrained("telugu-gpt2-tokenizer")
 
+if tokenizer.pad_token is None:
+    tokenizer.add_special_tokens({'pad_token': '<|pad|>'})
+
 config = GPT2Config(
     vocab_size=tokenizer.vocab_size,
     n_positions=1024,
@@ -28,8 +31,8 @@ books_dataset = load_dataset('text', data_files={'train': 'data/books.txt'})
 news_dataset = load_dataset('text', data_files={'train': 'data/news_website_cleaned.txt'})
 
 model = GPT2LMHeadModel(config)
+model.resize_token_embeddings(len(tokenizer))
 model.gradient_checkpointing_enable()
-model.save_pretrained("telugu-gpt2-small")
 
 dataset = concatenate_datasets([books_dataset['train'], news_dataset['train']])
 
@@ -37,6 +40,8 @@ def tokenize_function(example):
     return tokenizer(example["text"], truncation=True, max_length=1024)
 
 tokenized_dataset = dataset.map(tokenize_function, batched=True, remove_columns=["text"])
+
+tokenized_dataset = tokenized_dataset.filter(lambda example: len(example['input_ids']) > 0)
 
 data_collator = DataCollatorForLanguageModeling(
     tokenizer=tokenizer,
