@@ -22,6 +22,7 @@ books_dataset = load_dataset('text', data_files={'train': 'data/books.txt'})
 news_dataset = load_dataset('text', data_files={'train': 'data/news_website_cleaned.txt'})
 
 model = GPT2LMHeadModel(config)
+model.gradient_checkpointing_enable()
 model.save_pretrained("telugu-gpt2-medium")
 
 # Concatenate datasets
@@ -41,17 +42,15 @@ from transformers import TrainingArguments
 
 training_args = TrainingArguments(
     output_dir="./telugu-gpt2-medium",
-    overwrite_output_dir=True,
     per_device_train_batch_size=1,
-    gradient_accumulation_steps=8, 
+    gradient_accumulation_steps=8,
     num_train_epochs=3,
     save_steps=1000,
-    save_total_limit=2,
-    logging_steps=100,
-    evaluation_strategy="no",
-    learning_rate=5e-5,
-    weight_decay=0.01,
+    learning_rate=3e-5,
     fp16=True, 
+    gradient_checkpointing=True,
+    logging_steps=100,
+    save_total_limit=2,
 )
 
 trainer = Trainer(
