@@ -7,22 +7,22 @@ config = GPT2Config(
     vocab_size=tokenizer.vocab_size,
     n_positions=1024,
     n_ctx=1024,
-    n_embd=768,
-    n_layer=12,
-    n_head=12,
+    n_embd=1024,
+    n_layer=24,
+    n_head=16,
     bos_token_id=None,
     eos_token_id=None,
     pad_token_id=None,
 )
 
-config.save_pretrained("telugu-gpt2")
+config.save_pretrained("telugu-gpt2-medium")
 
 
 books_dataset = load_dataset('text', data_files={'train': 'data/books.txt'})
 news_dataset = load_dataset('text', data_files={'train': 'data/news_website_cleaned.txt'})
 
 model = GPT2LMHeadModel(config)
-model.save_pretrained("telugu-gpt2")
+model.save_pretrained("telugu-gpt2-medium")
 
 # Concatenate datasets
 dataset = concatenate_datasets([books_dataset['train'], news_dataset['train']])
@@ -36,3 +36,32 @@ data_collator = DataCollatorForLanguageModeling(
     tokenizer=tokenizer,
     mlm=False,
 )
+
+from transformers import TrainingArguments
+
+training_args = TrainingArguments(
+    output_dir="./telugu-gpt2-medium",
+    overwrite_output_dir=True,
+    per_device_train_batch_size=1,
+    gradient_accumulation_steps=8, 
+    num_train_epochs=3,
+    save_steps=1000,
+    save_total_limit=2,
+    logging_steps=100,
+    evaluation_strategy="no",
+    learning_rate=5e-5,
+    weight_decay=0.01,
+    fp16=True, 
+)
+
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=tokenized_dataset,
+    tokenizer=tokenizer,
+    data_collator=data_collator,
+)
+
+trainer.train()
+trainer.save_model("telugu-gpt2-medium")
+tokenizer.save_pretrained("telugu-gpt2-medium")
