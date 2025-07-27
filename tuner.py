@@ -1,4 +1,11 @@
-from transformers import GPT2Config, GPT2TokenizerFast, GPT2LMHeadModel, DataCollatorForLanguageModeling, Trainer, TrainingArguments
+from transformers import (
+    GPT2Config,
+    GPT2TokenizerFast,
+    GPT2LMHeadModel,
+    DataCollatorForLanguageModeling,
+    Trainer,
+    TrainingArguments
+)
 from datasets import load_dataset, concatenate_datasets
 
 tokenizer = GPT2TokenizerFast.from_pretrained("telugu-gpt2-tokenizer")
@@ -7,25 +14,23 @@ config = GPT2Config(
     vocab_size=tokenizer.vocab_size,
     n_positions=1024,
     n_ctx=1024,
-    n_embd=1024,
-    n_layer=24,
-    n_head=16,
-    bos_token_id=None,
-    eos_token_id=None,
-    pad_token_id=None,
+    n_embd=768,
+    n_layer=12,
+    n_head=12,
+    bos_token_id=tokenizer.bos_token_id,
+    eos_token_id=tokenizer.eos_token_id,
+    pad_token_id=tokenizer.pad_token_id,
 )
 
-config.save_pretrained("telugu-gpt2-medium")
-
+config.save_pretrained("telugu-gpt2-small")
 
 books_dataset = load_dataset('text', data_files={'train': 'data/books.txt'})
 news_dataset = load_dataset('text', data_files={'train': 'data/news_website_cleaned.txt'})
 
 model = GPT2LMHeadModel(config)
 model.gradient_checkpointing_enable()
-model.save_pretrained("telugu-gpt2-medium")
+model.save_pretrained("telugu-gpt2-small")
 
-# Concatenate datasets
 dataset = concatenate_datasets([books_dataset['train'], news_dataset['train']])
 
 def tokenize_function(example):
@@ -38,20 +43,19 @@ data_collator = DataCollatorForLanguageModeling(
     mlm=False,
 )
 
-from transformers import TrainingArguments
-
 training_args = TrainingArguments(
-    output_dir="./telugu-gpt2-medium",
+    output_dir="./telugu-gpt2-small",
     per_device_train_batch_size=1,
     gradient_accumulation_steps=8,
     num_train_epochs=3,
     save_steps=1000,
     learning_rate=3e-5,
-    fp16=True, 
+    fp16=True,
     gradient_checkpointing=True,
     logging_steps=100,
     save_total_limit=2,
 )
+
 
 trainer = Trainer(
     model=model,
@@ -62,5 +66,6 @@ trainer = Trainer(
 )
 
 trainer.train()
-trainer.save_model("telugu-gpt2-medium")
-tokenizer.save_pretrained("telugu-gpt2-medium")
+
+trainer.save_model("telugu-gpt2-small")
+tokenizer.save_pretrained("telugu-gpt2-small")
