@@ -1,0 +1,3 @@
+[submodule "scrapers/eenadu"]
+	path = scrapers/eenadu
+	url = https://github.com/devmello/eenadu_scraper
