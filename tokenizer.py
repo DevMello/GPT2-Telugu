@@ -1,4 +1,5 @@
 from tokenizers import ByteLevelBPETokenizer
+from transformers import GPT2TokenizerFast
 import os
 
 tokenizer = ByteLevelBPETokenizer()
@@ -14,3 +15,6 @@ tokenizer.train(
 )
 
 tokenizer.save_model(output_dir)
+
+tokenizer = GPT2TokenizerFast.from_pretrained("telugu-tokenizer")
+tokenizer.save_pretrained("telugu-gpt2-tokenizer")
