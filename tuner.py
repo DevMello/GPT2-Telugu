@@ -8,3 +8,4 @@ model = GPT2LMHeadModel.from_pretrained('gpt2')
 tokenizer.pad_token = tokenizer.eos_token
 model.config.pad_token_id = tokenizer.eos_token_id
 
+f
