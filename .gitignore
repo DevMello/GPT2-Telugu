@@ -6,3 +6,4 @@ data/news_website.txt
 wandb/
 *.safetensors
 telugu-gpt2-small/runs/
+telugu-gpt2-small/checkpoint-*/
