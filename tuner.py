@@ -70,7 +70,7 @@ trainer = Trainer(
     data_collator=data_collator,
 )
 
-trainer.train()
+trainer.train(resume_from_checkpoint=True)
 
 trainer.save_model("telugu-gpt2-small")
 tokenizer.save_pretrained("telugu-gpt2-small")

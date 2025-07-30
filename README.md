@@ -67,6 +67,10 @@ To run this project, you would typically follow these steps:
 4.  **Train Tokenizer:** Run the `tokenizer.py` script to train the custom tokenizer.
 5.  **Train Model:** Run the `tuner.py` script to train the GPT-2 model.
 
+## Results
+
+The model, in its current state, shows some promise but is not yet capable of generating coherent and meaningful text. The generated text, when prompted with "తెలుగు భాషలో పురాణాలు" (Puranas in Telugu language), is mostly a collection of disconnected words and phrases. This is likely due to the small size of the training dataset (832.95 MB). While the model has learned some vocabulary and basic sentence structure, it lacks the deeper understanding of the language needed to generate high-quality text. The output shows that the model can produce Telugu characters and some words, but it fails to form grammatically correct or contextually relevant sentences. Increasing the size and diversity of the training data is the most critical next step to improve the model's performance. However, this presents a significant challenge as the current model was trained on a single 4060 Ti GPU and took 68 hours and 38 minutes of compute time. Scaling the data further will necessitate more powerful computing resources for the training to be feasible.
+
 ## Conclusion
 
 This project demonstrates a complete pipeline for building a language model for a low-resource language like Telugu. It covers all the essential steps, from data collection to model training, and utilizes modern and powerful libraries to achieve this. The resulting model can be used for various NLP tasks, such as text generation, translation, and sentiment analysis.

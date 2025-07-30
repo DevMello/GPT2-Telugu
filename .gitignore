@@ -7,3 +7,4 @@ wandb/
 *.safetensors
 telugu-gpt2-small/runs/
 telugu-gpt2-small/checkpoint-*/
+test.py
